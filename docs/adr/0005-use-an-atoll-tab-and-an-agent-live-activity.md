@@ -23,6 +23,9 @@ Code Island will have two Atoll-hosted presentations. Its persistent tab uses At
 
 ## Activity arbitration
 
+The bullets in this section record the original cooperative policy. They are
+superseded by [ADR 0011](0011-prioritize-code-island-over-noncritical-activities.md).
+
 - System and privacy indicators take priority over Code Island.
 - A blocking agent handoff may interrupt noncritical content and select the Code Island tab.
 - A processing agent uses a secondary indicator when the active layout supports one and otherwise yields to music, timers, recording, and similar live activities.

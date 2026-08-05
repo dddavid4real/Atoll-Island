@@ -33,7 +33,7 @@ The primary view shown when the Code Island tab is selected. It presents a compa
 _Avoid_: single-session view, approval queue
 
 **Agent live activity**:
-The Atoll-hosted compact presentation shown while at least one agent session is running or processing. It carries CodeIsland's mascots and motion, remains visible when no higher-priority Atoll activity needs the space, and never opens the full tab by itself.
+The Atoll-hosted compact presentation shown while at least one agent session is running or processing. It carries CodeIsland's mascots and motion, displaces noncritical notch content while active, yields to system and privacy states, and never opens the full tab by itself.
 _Avoid_: CodeIsland window, second panel, background dashboard
 
 **Agent pop-out**:
@@ -41,8 +41,8 @@ An Atoll-hosted expansion for a meaningful agent transition. Starts receive a br
 _Avoid_: notification window, standalone overlay, tool-call animation
 
 **Activity arbitration**:
-Atoll's policy for sharing the notch among live capabilities. System and privacy states win; blocking agent handoffs may interrupt noncritical content; processing agents share a secondary indicator where possible and otherwise yield; deferred agent pop-outs appear after higher-priority activity clears.
-_Avoid_: agent-first mode, last-writer-wins
+Atoll's policy for sharing the notch among live capabilities. System and privacy states win; otherwise Code Island sessions and pop-outs displace noncritical media, timers, recording, transfers, extensions, and shelf content. Displaced content keeps running and resumes when Code Island clears; Code Island never shares the music layout.
+_Avoid_: last-writer-wins, music-secondary Code Island
 
 **Exact-origin suppression**:
 The omission of an agent pop-out after Atoll positively matches the visible terminal tab or native agent window to that same session. An uncertain or application-only match never suppresses presentation.

@@ -146,32 +146,11 @@ struct NotchCodeIslandActivityView: View {
     }
 }
 
-/// Small secondary indicator used only by layouts that explicitly coexist.
-struct NotchCodeIslandSecondaryActivityView: View {
-    let presentation: CodeIslandHostPresentation
-
-    var body: some View {
-        ZStack {
-            CodeIslandAgentGraphic(state: .working, size: 24)
-        }
-        .help(workingHelp)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(ci("Codex is working"))
-    }
-
-    private var workingHelp: String {
-        guard let project = presentation.subject.projectDisplayName else {
-            return ci("Codex is working")
-        }
-        return "\(ci("Codex is working")) \(ci("in")) \(project)"
-    }
-}
-
 private func ci(_ key: String.LocalizationValue) -> String {
     CodeIslandLocalization.string(key)
 }
 
-/// Preference-aware identity graphic shared by primary and secondary layouts.
+/// Preference-aware identity graphic for Code Island's primary activity.
 private struct CodeIslandAgentGraphic: View {
     @ObservedObject private var featurePreferences = CodeIslandFeaturePreferenceStore.shared
 

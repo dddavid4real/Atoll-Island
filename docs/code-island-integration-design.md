@@ -191,9 +191,9 @@ The runtime emits state and presentation intents; it never changes Atoll views d
 Activity arbitration follows these rules:
 
 1. System and privacy indicators win.
-2. Blocking agent handoffs may interrupt noncritical content.
-3. Processing agents use a secondary indicator where supported and otherwise yield to music, timers, recording, and similar activities.
-4. Completion and failure pop-outs queue behind higher-priority activity and appear after it clears.
+2. Code Island processing, starts, attention handoffs, completions, and failures displace noncritical media, timers, recording, transfers, extensions, and shelf content.
+3. Displaced noncritical activity continues running and resumes after Code Island clears; Code Island is never embedded in the music secondary layout.
+4. Code Island presentations queue only behind system or privacy activity and appear after it clears.
 5. A pop-out is suppressed only after a positive match to the exact visible origin session; uncertainty presents rather than suppresses.
 
 Atoll's existing tab enum, tab order, content switch, and closed-notch activity selection gain one built-in Code Island route. Code Island does not use AtollExtensionKit as its primary integration boundary and does not create an `NSPanel`.

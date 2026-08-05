@@ -155,23 +155,23 @@ struct CodeIslandPhaseSixPresentationRegression {
         guard policy.disposition(
             for: working,
             context: .init(occupancy: .noncritical, supportsSecondaryIndicator: true, originMatch: .unknown)
-        ) == .present(.compact(isSecondary: true)) else {
-            fatalError("Processing should share only a layout that explicitly supports a secondary indicator")
+        ) == .present(.compact(isSecondary: false)) else {
+            fatalError("Processing must displace noncritical media instead of sharing an overlapping secondary layout")
         }
 
         guard policy.disposition(
             for: working,
             context: .init(occupancy: .noncritical, supportsSecondaryIndicator: false, originMatch: .unknown)
-        ) == .stateOnly else {
-            fatalError("Processing must yield when the occupied layout cannot coexist")
+        ) == .present(.compact(isSecondary: false)) else {
+            fatalError("Processing must remain the primary activity when noncritical content cannot coexist")
         }
 
         let completion = intent(.completed, sessionID: "completed")
         guard policy.disposition(
             for: completion,
             context: .init(occupancy: .noncritical, supportsSecondaryIndicator: false, originMatch: .different)
-        ) == .enqueue else {
-            fatalError("Completion must queue behind media, timers, and recording")
+        ) == .present(.completed) else {
+            fatalError("Completion must displace noncritical media instead of waiting behind it")
         }
 
         let attention = intent(.attentionRequired(.approval), sessionID: "waiting")

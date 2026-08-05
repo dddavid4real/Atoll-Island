@@ -277,7 +277,7 @@ final class CodeIslandHost: ObservableObject {
         if let activePresentation,
            !activePresentation.isAttention,
            !activePresentation.isCompact,
-           occupancy != .available {
+           occupancy == .systemOrPrivacy {
             enqueue(activePresentation.intent)
             clearActivePresentation()
         }

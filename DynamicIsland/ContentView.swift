@@ -440,7 +440,7 @@ struct ContentView: View {
         if codeIslandNoncriticalActivityActive {
             return CodeIslandArbitrationSnapshot(
                 occupancy: .noncritical,
-                supportsSecondaryIndicator: codeIslandCanPairWithMusic
+                supportsSecondaryIndicator: false
             )
         }
         return CodeIslandArbitrationSnapshot(
@@ -482,21 +482,6 @@ struct ContentView: View {
         return !musicManager.isPlayerIdle && hasMetadata
     }
 
-    private var codeIslandCanPairWithMusic: Bool {
-        codeIslandMusicPresentationActive
-            && !isSneakPeekVisibleOnCurrentScreen
-            && !isCurrentScreenExpansionVisible
-            && !(coordinator.timerLiveActivityEnabled && timerManager.isTimerActive)
-            && !(enableReminderLiveActivity && reminderManager.isActive)
-            && !(enableScreenRecordingDetection
-                && (recordingManager.isRecording || !recordingManager.isRecorderIdle))
-            && !(Defaults[.enableDownloadListener] && downloadManager.isDownloading)
-            && !localSendLiveActivityActive
-            && !(enableExtensionLiveActivities
-                && !extensionLiveActivityManager.activeActivities.isEmpty)
-            && (shelfState.isEmpty || enableMinimalisticUI)
-    }
-
     private var codeIslandMusicPresentationActive: Bool {
         codeIslandHasActiveMusic
             && coordinator.musicLiveActivityEnabled
@@ -528,12 +513,7 @@ struct ContentView: View {
               codeIslandArbitrationSnapshot.occupancy != .systemOrPrivacy else {
             return nil
         }
-        if let active = codeIslandHost.activePresentation {
-            if active.isAttention || codeIslandArbitrationSnapshot.occupancy == .available {
-                return active
-            }
-        }
-        guard codeIslandArbitrationSnapshot.occupancy == .available else { return nil }
+        if let active = codeIslandHost.activePresentation { return active }
         return codeIslandHost.compactPresentation
     }
 
@@ -1034,8 +1014,6 @@ struct ContentView: View {
                               return false
                           case .extensionPayload:
                               return false
-                          case .codeIsland:
-                              return false
                           case .shelf:
                               return false
                           }
@@ -1477,12 +1455,6 @@ struct ContentView: View {
             return .extensionPayload(extensionPayload)
         }
 
-        if let presentation = codeIslandHost.compactPresentation,
-           case .compact(let isSecondary) = presentation.style,
-           isSecondary {
-            return .codeIsland(presentation)
-        }
-
         // Shelf: show file count as lowest-priority secondary
         if !shelfState.isEmpty && !lockScreenManager.isLocked && !enableMinimalisticUI {
             return .shelf(count: shelfState.items.count)
@@ -1508,8 +1480,6 @@ struct ContentView: View {
         case .extensionPayload(let payload):
             let maxWidth = baseWidth + centerBaseWidth * 0.6
             return ExtensionLayoutMetrics.trailingWidth(for: payload, baseWidth: baseWidth, maxWidth: maxWidth)
-        case .codeIsland:
-            return baseWidth
         case .shelf:
             return baseWidth
         }
@@ -1614,8 +1584,6 @@ struct ContentView: View {
                         accent: payload.descriptor.accentColor.swiftUIColor,
                         size: badgeSize
                     )
-                case .codeIsland(let presentation):
-                    NotchCodeIslandSecondaryActivityView(presentation: presentation)
                 case .shelf:
                     Image(systemName: "tray.and.arrow.down.fill")
                         .font(.system(size: badgeSize * 0.50, weight: .semibold))
@@ -1678,8 +1646,6 @@ struct ContentView: View {
             spectrumView(forceSpectrum: true, trailingInset: 6)
         case .extensionPayload(let payload):
             ExtensionMusicWingView(payload: payload, notchHeight: notchHeight, trailingWidth: trailingWidth)
-        case .codeIsland(let presentation):
-            NotchCodeIslandSecondaryActivityView(presentation: presentation)
         case .shelf(let count):
             // File count badge: bold white number, like a minimal pill
             Text("\(count)")
@@ -2830,7 +2796,6 @@ private enum MusicSecondaryLiveActivity: Equatable {
     case focus(FocusModeType)
     case capsLock(showLabel: Bool)
     case extensionPayload(ExtensionLiveActivityPayload)
-    case codeIsland(CodeIslandHostPresentation)
     case shelf(count: Int)
 
     var id: String {
@@ -2847,8 +2812,6 @@ private enum MusicSecondaryLiveActivity: Equatable {
             return showLabel ? "caps-lock-label" : "caps-lock-icon"
         case .extensionPayload(let payload):
             return "extension-\(payload.id)"
-        case .codeIsland(let presentation):
-            return "code-island-\(presentation.id)"
         case .shelf(let count):
             return "shelf-\(count)"
         }

@@ -198,18 +198,16 @@ public struct CodeIslandPresentationPolicy: Sendable {
         switch intent.kind {
         case .processing:
             switch context.occupancy {
-            case .available:
+            case .available, .noncritical:
                 return .present(.compact(isSecondary: false))
-            case .noncritical where context.supportsSecondaryIndicator:
-                return .present(.compact(isSecondary: true))
-            case .noncritical, .systemOrPrivacy:
+            case .systemOrPrivacy:
                 return .stateOnly
             }
 
         case .sessionStarted:
-            return context.occupancy == .available
-                ? .present(.sessionStarted)
-                : .enqueue
+            return context.occupancy == .systemOrPrivacy
+                ? .enqueue
+                : .present(.sessionStarted)
 
         case .attentionRequired(let reason):
             guard !preferences.smartSuppressionEnabled
@@ -222,16 +220,16 @@ public struct CodeIslandPresentationPolicy: Sendable {
             guard preferences.completionPresentation != .off else { return .stateOnly }
             guard !preferences.smartSuppressionEnabled
                     || context.originMatch != .exactSession else { return .suppress }
-            return context.occupancy == .available
-                ? .present(.completed)
-                : .enqueue
+            return context.occupancy == .systemOrPrivacy
+                ? .enqueue
+                : .present(.completed)
 
         case .failed:
             guard !preferences.smartSuppressionEnabled
                     || context.originMatch != .exactSession else { return .suppress }
-            return context.occupancy == .available
-                ? .present(.failed)
-                : .enqueue
+            return context.occupancy == .systemOrPrivacy
+                ? .enqueue
+                : .present(.failed)
 
         case .dismissed:
             return .dismiss

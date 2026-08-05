@@ -88,13 +88,8 @@ class CodeIslandPhaseSixPresentationTests(unittest.TestCase):
         self.assertIn("codeIslandArbitrationSnapshot", content)
         self.assertIn(".systemOrPrivacy", content)
         self.assertIn(".noncritical", content)
-        self.assertIn("case codeIsland(CodeIslandHostPresentation)", content)
         self.assertIn("codeIslandStandalonePresentation", content)
-        self.assertIn("&& !localSendLiveActivityActive", content)
-        self.assertIn(
-            "&& !(Defaults[.enableDownloadListener] && downloadManager.isDownloading)",
-            content,
-        )
+        self.assertIn("occupancy == .systemOrPrivacy", host)
 
         self.assertIn('Darwin.open("/dev/tty"', bridge)
         self.assertIn('bridgeEnvironment["TTY"] = tty', bridge)
@@ -108,6 +103,15 @@ class CodeIslandPhaseSixPresentationTests(unittest.TestCase):
             "requestUserInput",
         ):
             self.assertNotIn(forbidden, combined)
+
+    def test_code_island_never_uses_the_music_secondary_layout(self):
+        content = (ROOT / "DynamicIsland" / "ContentView.swift").read_text()
+
+        self.assertNotIn(
+            "case codeIsland(CodeIslandHostPresentation)",
+            content,
+        )
+        self.assertNotIn("return .codeIsland(presentation)", content)
 
     @staticmethod
     def _compile_module(module_name, temporary_path, environment):

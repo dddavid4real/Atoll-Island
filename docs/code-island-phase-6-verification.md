@@ -2,7 +2,7 @@
 
 **Status:** Complete
 
-**Date:** 2026-08-04
+**Date:** 2026-08-04; arbitration amended 2026-08-05 by ADR 0011
 
 **Scope:** Multi-session dashboard, compact agent activity, selective pop-outs,
 Atoll-owned arbitration, origin handoff, and exact-origin suppression. Phase 7
@@ -32,9 +32,9 @@ release hardening remains unauthorized.
 - A pure policy accepts an intent plus Atoll's occupancy projection:
   `available`, `noncritical`, or `systemOrPrivacy`. It returns present, enqueue,
   suppress, state-only, or dismiss.
-- System, privacy, lock, and protected HUD states win. A blocking attention
-  handoff may interrupt noncritical content. Start/completion/failure pop-outs
-  queue while any higher activity is present.
+- System, privacy, lock, and protected HUD states win. Code Island processing,
+  starts, attention handoffs, completions, and failures displace noncritical
+  content and queue only while a protected activity is present.
 - Deferred work has stable semantic priority: attention, failure, completion,
   then start. Newer state for the same provider/session replaces an older
   queued presentation instead of producing stale duplicates.
@@ -53,11 +53,10 @@ release hardening remains unauthorized.
 - Atoll owns the containing notch shape, width, height, transitions, tab route,
   and lifecycle. No `NSPanel`, second application, updater, settings window, or
   status item was introduced.
-- When the notch is free, a working Codex session receives the compact agent
-  live activity. When music is the only compatible owner and its secondary
-  slot is free, Dex appears there as a small secondary indicator. It otherwise
-  yields to timers, reminders, recording, transfers, extensions, and similar
-  live activity.
+- A working Codex session receives the primary compact agent live activity over
+  noncritical media, timers, reminders, recording, transfers, extensions, and
+  similar live activity. It never occupies the music secondary slot. Protected
+  system and privacy presentations still take priority.
 - Clicking the compact activity is user-initiated navigation to the persistent
   Code Island tab. A blocking handoff contains no decision control and offers
   only **Open in origin**.
@@ -101,7 +100,7 @@ Local verification completed:
   suite recompiles and executes the Phase 2 through Phase 6 Swift contract
   programs plus the real Phase 5 helper/listener/runtime regressions.
 - The Phase 6 executable runner proves urgency ordering, filtering, occupancy
-  policy, blocking-vs-system priority, primary/secondary compact behavior,
+  policy, Code-Island-vs-noncritical priority, protected-system priority,
   deterministic deferred ordering, positive exact matching, application-only
   uncertainty, false-match presentation, and exact-match suppression.
 - Focused XCTest coverage for the same Core/Runtime policy was added for CI.

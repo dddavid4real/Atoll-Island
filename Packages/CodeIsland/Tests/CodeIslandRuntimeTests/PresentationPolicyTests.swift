@@ -37,6 +37,36 @@ final class PresentationPolicyTests: XCTestCase {
         )
     }
 
+    func testCodeIslandDisplacesNoncriticalMediaButNotSystemActivity() {
+        let policy = CodeIslandPresentationPolicy()
+
+        XCTAssertEqual(
+            policy.disposition(
+                for: intent(.processing),
+                context: CodeIslandPresentationContext(
+                    occupancy: .noncritical,
+                    supportsSecondaryIndicator: true,
+                    originMatch: .unknown
+                )
+            ),
+            .present(.compact(isSecondary: false))
+        )
+        XCTAssertEqual(
+            policy.disposition(
+                for: intent(.processing),
+                context: context(occupancy: .systemOrPrivacy, originMatch: .unknown)
+            ),
+            .stateOnly
+        )
+        XCTAssertEqual(
+            policy.disposition(
+                for: intent(.completed),
+                context: context(occupancy: .noncritical, originMatch: .different)
+            ),
+            .present(.completed)
+        )
+    }
+
     func testExactOriginSuppressionRequiresSessionSpecificEvidence() {
         let expected = OriginNavigation(
             applicationBundleIdentifier: "com.apple.Terminal",
