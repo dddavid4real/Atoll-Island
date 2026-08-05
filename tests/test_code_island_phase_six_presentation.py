@@ -113,6 +113,30 @@ class CodeIslandPhaseSixPresentationTests(unittest.TestCase):
         )
         self.assertNotIn("return .codeIsland(presentation)", content)
 
+    def test_hover_open_routes_active_agent_sessions_to_code_island(self):
+        host = (
+            ROOT / "DynamicIsland" / "components" / "CodeIsland" / "CodeIslandHost.swift"
+        ).read_text()
+        content = (ROOT / "DynamicIsland" / "ContentView.swift").read_text()
+
+        self.assertIn("var hasActiveAgentSession: Bool", host)
+        self.assertIn("runtime.sessions.contains", host)
+        self.assertIn("!$0.state.isTerminal", host)
+
+        hover_start = content.index("private func handleHover(_ hovering: Bool)")
+        hover_end = content.index("private func isPointInsideNotchWindow", hover_start)
+        hover = content[hover_start:hover_end]
+        active_route = "if self.codeIslandHost.hasActiveAgentSession"
+        timer_route = "else if shouldFocusTimerTab"
+        self.assertIn(active_route, hover)
+        self.assertIn("self.coordinator.currentView = .codeIsland", hover)
+        self.assertIn(timer_route, hover)
+        self.assertLess(hover.index(active_route), hover.index(timer_route))
+        self.assertLess(
+            hover.index("self.coordinator.currentView = .codeIsland"),
+            hover.index("self.openNotch()"),
+        )
+
     @staticmethod
     def _compile_module(module_name, temporary_path, environment):
         source_directory = PACKAGE / "Sources" / module_name

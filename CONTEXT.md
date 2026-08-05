@@ -33,7 +33,7 @@ The primary view shown when the Code Island tab is selected. It presents a compa
 _Avoid_: single-session view, approval queue
 
 **Agent live activity**:
-The Atoll-hosted compact presentation shown while at least one agent session is running or processing. It carries CodeIsland's mascots and motion, displaces noncritical notch content while active, yields to system and privacy states, and never opens the full tab by itself.
+The Atoll-hosted compact presentation shown while at least one agent session is running or processing. It carries CodeIsland's mascots and motion, displaces noncritical notch content while active, yields to system and privacy states, and never opens the full tab by itself. When the user opens the notch by hovering while any agent session is active, Atoll selects the Code Island tab instead of Home; idle hover opening keeps Atoll's normal route.
 _Avoid_: CodeIsland window, second panel, background dashboard
 
 **Agent pop-out**:

@@ -109,6 +109,13 @@ final class CodeIslandHost: ObservableObject {
 
     var isActivated: Bool { runtime.isRunning }
 
+    /// True while any provider session still expects work or user attention.
+    /// This intentionally follows runtime state rather than presentation state:
+    /// Atoll may suppress the compact card while the underlying session remains active.
+    var hasActiveAgentSession: Bool {
+        runtime.sessions.contains { !$0.state.isTerminal }
+    }
+
     /// Starts read-only discovery, then resumes only a receipt-owned activation.
     func start() {
         guard lifecycleState == .stopped else { return }

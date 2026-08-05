@@ -2227,7 +2227,11 @@ struct ContentView: View {
                           !self.isSneakPeekVisibleOnCurrentScreen,
                           !self.coordinator.isHoverOpenSuppressed else { return }
 
-                    if shouldFocusTimerTab {
+                    if self.codeIslandHost.hasActiveAgentSession {
+                        withAnimation(.smooth) {
+                            self.coordinator.currentView = .codeIsland
+                        }
+                    } else if shouldFocusTimerTab {
                         withAnimation(.smooth) {
                             self.coordinator.currentView = .timer
                         }
