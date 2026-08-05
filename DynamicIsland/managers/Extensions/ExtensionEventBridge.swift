@@ -27,7 +27,7 @@ final class ExtensionEventBridge {
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
     private let processIdentifier = ProcessInfo.processInfo.processIdentifier
-    private let ioQueue = DispatchQueue(label: "com.ebullioscopic.Atoll.extensions.bridge", qos: .utility)
+    private let ioQueue = DispatchQueue(label: "com.dddavid4real.AtollIsland.extensions.bridge", qos: .utility)
 
     private init() {}
 
@@ -116,7 +116,7 @@ final class ExtensionEventBridge {
     private func snapshotURL(for channel: Channel) -> URL {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? URL(fileURLWithPath: NSTemporaryDirectory())
-        let directory = appSupport.appendingPathComponent("AtollExtensions", isDirectory: true)
+        let directory = appSupport.appendingPathComponent("AtollIslandExtensions", isDirectory: true)
         switch channel {
         case .liveActivities:
             return directory.appendingPathComponent("live_activities.json", isDirectory: false)
@@ -157,11 +157,11 @@ final class ExtensionEventBridge {
         var notificationName: Notification.Name {
             switch self {
             case .liveActivities:
-                return Notification.Name("com.ebullioscopic.Atoll.extensions.liveActivitySnapshot")
+                return Notification.Name("com.dddavid4real.AtollIsland.extensions.liveActivitySnapshot")
             case .lockScreenWidgets:
-                return Notification.Name("com.ebullioscopic.Atoll.extensions.lockScreenWidgetSnapshot")
+                return Notification.Name("com.dddavid4real.AtollIsland.extensions.lockScreenWidgetSnapshot")
             case .notchExperiences:
-                return Notification.Name("com.ebullioscopic.Atoll.extensions.notchExperienceSnapshot")
+                return Notification.Name("com.dddavid4real.AtollIsland.extensions.notchExperienceSnapshot")
             }
         }
 

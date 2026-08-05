@@ -8,7 +8,7 @@ fail() {
 }
 
 if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
-  fail "usage: $0 /path/to/Atoll.app [--require-signature]"
+  fail "usage: $0 '/path/to/Atoll Island.app' [--require-signature]"
 fi
 
 APP_PATH=${1%/}
@@ -17,11 +17,11 @@ if [ -n "$SIGNATURE_MODE" ] && [ "$SIGNATURE_MODE" != "--require-signature" ]; t
   fail "unknown option: $SIGNATURE_MODE"
 fi
 
-[ "$(basename "$APP_PATH")" = "Atoll.app" ] \
-  || fail "the artifact must be named Atoll.app"
-[ -d "$APP_PATH/Contents" ] || fail "Atoll.app has no Contents directory"
+[ "$(basename "$APP_PATH")" = "Atoll Island.app" ] \
+  || fail "the artifact must be named Atoll Island.app"
+[ -d "$APP_PATH/Contents" ] || fail "Atoll Island.app has no Contents directory"
 [ -x "$APP_PATH/Contents/MacOS/Atoll" ] \
-  || fail "Atoll's main executable is missing or not executable"
+  || fail "Atoll Island's main executable is missing or not executable"
 
 CODEISLAND_APP=$(find "$APP_PATH" -type d -name 'CodeIsland.app' -print -quit)
 if [ -n "$CODEISLAND_APP" ]; then
@@ -46,7 +46,7 @@ FORBIDDEN_EXECUTABLE=$(find "$APP_PATH/Contents" -type f -perm -111 \( \
   || fail "a forbidden standalone CodeIsland executable is present"
 
 RESOURCES="$APP_PATH/Contents/Resources"
-[ -d "$RESOURCES" ] || fail "Atoll.app has no Resources directory"
+[ -d "$RESOURCES" ] || fail "Atoll Island.app has no Resources directory"
 
 RESOURCE_BUNDLE_COUNT=$(find "$RESOURCES" -type d -name '*CodeIslandUI*.bundle' -print | wc -l | tr -d '[:space:]')
 [ "$RESOURCE_BUNDLE_COUNT" = "1" ] \
@@ -104,20 +104,20 @@ if [ "$SIGNATURE_MODE" = "--require-signature" ]; then
   codesign --verify --strict --verbose=2 "$HELPER" \
     || fail "the Code Island helper signature is invalid"
   codesign --verify --deep --strict --verbose=2 "$APP_PATH" \
-    || fail "the Atoll application signature is invalid"
+    || fail "the Atoll Island application signature is invalid"
 
   APP_SIGNATURE=$(codesign -dv --verbose=4 "$APP_PATH" 2>&1)
   HELPER_SIGNATURE=$(codesign -dv --verbose=4 "$HELPER" 2>&1)
   grep -q '^Authority=Developer ID Application:' <<< "$APP_SIGNATURE" \
-    || fail "Atoll is not signed with a Developer ID Application identity"
+    || fail "Atoll Island is not signed with a Developer ID Application identity"
   grep -q '^Authority=Developer ID Application:' <<< "$HELPER_SIGNATURE" \
     || fail "the Code Island helper is not signed with a Developer ID Application identity"
 
   APP_TEAM=$(sed -n 's/^TeamIdentifier=//p' <<< "$APP_SIGNATURE")
   HELPER_TEAM=$(sed -n 's/^TeamIdentifier=//p' <<< "$HELPER_SIGNATURE")
-  [ -n "$APP_TEAM" ] || fail "Atoll's signing team is unavailable"
+  [ -n "$APP_TEAM" ] || fail "Atoll Island's signing team is unavailable"
   [ "$APP_TEAM" = "$HELPER_TEAM" ] \
-    || fail "Atoll and the Code Island helper have different signing teams"
+    || fail "Atoll Island and the Code Island helper have different signing teams"
 fi
 
 printf 'Code Island bundle verification passed: %s\n' "$APP_PATH"

@@ -27,7 +27,7 @@ concurrency:
 env:
   PROJECT: DynamicIsland.xcodeproj
   SCHEME: DynamicIsland
-  APP_NAME: Atoll
+  APP_NAME: "Atoll Island"
   TEAM_ID: 9Y64TRM77N
 
 jobs:
@@ -295,7 +295,7 @@ jobs:
           xcodebuild archive \
             -project "$PROJECT" \
             -scheme "$SCHEME" \
-            -archivePath build/${APP_NAME}.xcarchive \
+            -archivePath "build/${APP_NAME}.xcarchive" \
             -configuration Release \
             CODE_SIGN_IDENTITY="Developer ID Application" \
             DEVELOPMENT_TEAM="$TEAM_ID" \
@@ -310,7 +310,7 @@ jobs:
       - name: Export Archive
         run: |
           xcodebuild -exportArchive \
-            -archivePath build/${APP_NAME}.xcarchive \
+            -archivePath "build/${APP_NAME}.xcarchive" \
             -exportPath build/export \
             -exportOptionsPlist ExportOptions.plist
 

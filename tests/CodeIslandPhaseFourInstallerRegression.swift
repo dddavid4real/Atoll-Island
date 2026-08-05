@@ -136,7 +136,7 @@ private final class Fixture {
         codexHome = root.appendingPathComponent(".codex", isDirectory: true)
         hooks = codexHome.appendingPathComponent("hooks.json")
         bundledBridge = root
-            .appendingPathComponent("Atoll.app/Contents/Helpers", isDirectory: true)
+            .appendingPathComponent("Atoll Island.app/Contents/Helpers", isDirectory: true)
             .appendingPathComponent("codeisland-bridge")
         managedRoot = root
             .appendingPathComponent("Library/Application Support/Atoll/CodeIsland", isDirectory: true)

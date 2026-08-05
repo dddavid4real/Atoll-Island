@@ -49,17 +49,6 @@ enum UpdateChannel: String, CaseIterable, Identifiable, Codable, Defaults.Serial
         }
     }
 
-    var feedURL: URL {
-        let base = "https://raw.githubusercontent.com/Ebullioscopic/Atoll/main/Updates"
-        switch self {
-        case .stable:  return URL(string: "\(base)/appcast.xml")!
-        case .beta:    return URL(string: "\(base)/appcast-beta.xml")!
-        case .alpha:   return URL(string: "\(base)/appcast-alpha.xml")!
-        case .nightly: return URL(string: "\(base)/appcast-nightly.xml")!
-        case .dev:     return URL(string: "\(base)/appcast-nightly.xml")!
-        }
-    }
-
     /// A color used for the channel badge in the UI.
     var badgeColor: NSColor {
         switch self {

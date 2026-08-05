@@ -22,7 +22,7 @@ struct CodeIslandPhaseFourDiscoveryRegression {
             .appendingPathComponent("Library/Application Support/Atoll/CodeIsland", isDirectory: true)
         let managedBridge = managedRoot.appendingPathComponent("codeisland-bridge")
         let managedReceipt = managedRoot.appendingPathComponent("codex-installation.json")
-        let bundledBridge = root.appendingPathComponent("Atoll.app/Contents/Helpers/codeisland-bridge")
+        let bundledBridge = root.appendingPathComponent("Atoll Island.app/Contents/Helpers/codeisland-bridge")
         let socket = root.appendingPathComponent("codeisland.sock")
 
         try fileManager.createDirectory(at: binDirectory, withIntermediateDirectories: true)
@@ -61,7 +61,7 @@ struct CodeIslandPhaseFourDiscoveryRegression {
                     ]]],
                     ["hooks": [[
                         "type": "command",
-                        "command": "'/Applications/Atoll.app/Contents/Helpers/codeisland-bridge' --source codex --managed-by-atoll existing-plan",
+                        "command": "'/Applications/Atoll Island.app/Contents/Helpers/codeisland-bridge' --source codex --managed-by-atoll existing-plan",
                     ]]],
                     ["hooks": [[
                         "type": "command",

@@ -31,16 +31,15 @@ struct DynamicNotchApp: App {
     @Environment(\.openWindow) var openWindow
 
     let updaterController: SPUStandardUpdaterController
-    /// Retained delegate instance that dynamically selects the Sparkle feed URL
-    /// based on the user's update channel preference.
+    /// Retained because Settings still owns the shared controller. Personal
+    /// Atoll Island builds never start Sparkle or expose an upstream update UI.
     private let updaterDelegate = AtollUpdaterDelegate()
 
     init() {
-        // Skip Sparkle's launch-time update check during UI testing.
-        // The AtollUpdaterDelegate overrides the feed URL at runtime
-        // based on the user's selected update channel.
+        // This personal fork is installed alongside upstream Atoll. Starting
+        // Sparkle here could replace it with an upstream Atoll release.
         updaterController = SPUStandardUpdaterController(
-            startingUpdater: !AppRuntimeEnvironment.isUITesting,
+            startingUpdater: false,
             updaterDelegate: updaterDelegate, userDriverDelegate: nil)
 
         // Initialize the settings window controller with the updater controller
@@ -48,13 +47,12 @@ struct DynamicNotchApp: App {
     }
 
     var body: some Scene {
-        MenuBarExtra("dynamic.island", systemImage: "mountain.2.fill", isInserted: $showMenuBarIcon) {
+        MenuBarExtra("Atoll Island", systemImage: "mountain.2.fill", isInserted: $showMenuBarIcon) {
             Button("Settings") {
                 SettingsWindowController.shared.showWindow()
             }
-            CheckForUpdatesView(updater: updaterController.updater)
             Divider()
-            Button("Restart Atoll") {
+            Button("Restart Atoll Island") {
                 guard let bundleIdentifier = Bundle.main.bundleIdentifier else { return }
 
                 let workspace = NSWorkspace.shared
@@ -991,7 +989,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func installTopMenuItemsIfNeeded() {
         guard let mainMenu = NSApp.mainMenu else { return }
-        if mainMenu.items.contains(where: { $0.identifier?.rawValue == "Atoll.Focus.Menu" }) {
+        if mainMenu.items.contains(where: { $0.identifier?.rawValue == "AtollIsland.Focus.Menu" }) {
             updateFocusMenuState()
             return
         }
@@ -999,7 +997,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let insertionIndex = preferredMenuInsertionIndex(in: mainMenu)
 
         let focusMenuItem = NSMenuItem(title: "Focus", action: nil, keyEquivalent: "")
-        focusMenuItem.identifier = NSUserInterfaceItemIdentifier("Atoll.Focus.Menu")
+        focusMenuItem.identifier = NSUserInterfaceItemIdentifier("AtollIsland.Focus.Menu")
         let focusSubmenu = NSMenu(title: "Focus")
 
         let withoutDevTools = NSMenuItem(
@@ -1025,7 +1023,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         focusUseDevToolsMenuItem = useDevTools
 
         let accessibilityMenuItem = NSMenuItem(title: "Accessibility", action: nil, keyEquivalent: "")
-        accessibilityMenuItem.identifier = NSUserInterfaceItemIdentifier("Atoll.Accessibility.Menu")
+        accessibilityMenuItem.identifier = NSUserInterfaceItemIdentifier("AtollIsland.Accessibility.Menu")
         let accessibilitySubmenu = NSMenu(title: "Accessibility")
 
         let requestAccessibility = NSMenuItem(
@@ -1048,7 +1046,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         mainMenu.insertItem(accessibilityMenuItem, at: insertionIndex + 1)
 
         let permissionsMenuItem = NSMenuItem(title: "Permissions", action: nil, keyEquivalent: "")
-        permissionsMenuItem.identifier = NSUserInterfaceItemIdentifier("Atoll.Permissions.Menu")
+        permissionsMenuItem.identifier = NSUserInterfaceItemIdentifier("AtollIsland.Permissions.Menu")
         let permissionsSubmenu = NSMenu(title: "Permissions")
 
         let requestFullDisk = NSMenuItem(
@@ -1080,7 +1078,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         mainMenu.insertItem(permissionsMenuItem, at: insertionIndex + 2)
 
         let toolsMenuItem = NSMenuItem(title: "Tools", action: nil, keyEquivalent: "")
-        toolsMenuItem.identifier = NSUserInterfaceItemIdentifier("Atoll.Tools.Menu")
+        toolsMenuItem.identifier = NSUserInterfaceItemIdentifier("AtollIsland.Tools.Menu")
         let toolsSubmenu = NSMenu(title: "Tools")
 
         let loggingLevelItem = NSMenuItem(title: "Logging Level", action: nil, keyEquivalent: "")
@@ -1189,7 +1187,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func exportLogs() {
         let savePanel = NSSavePanel()
-        savePanel.nameFieldStringValue = "Atoll_Logs.zip"
+        savePanel.nameFieldStringValue = "AtollIsland_Logs.zip"
         savePanel.title = "Export Logs & Crash Reports"
         
         savePanel.begin { response in
@@ -1203,7 +1201,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     let logsFile = tempDir.appendingPathComponent("app_logs.txt")
                     let logProcess = Process()
                     logProcess.executableURL = URL(fileURLWithPath: "/usr/bin/log")
-                    logProcess.arguments = ["show", "--predicate", "subsystem == 'com.Ebullioscopic.Atoll' OR subsystem == 'com.Ebullioscopic.Atoll.dev'", "--info", "--debug", "--last", "2d"]
+                    logProcess.arguments = ["show", "--predicate", "subsystem == 'com.dddavid4real.AtollIsland' OR subsystem == 'com.dddavid4real.AtollIsland.dev'", "--info", "--debug", "--last", "2d"]
                     
                     let pipe = Pipe()
                     logProcess.standardOutput = pipe

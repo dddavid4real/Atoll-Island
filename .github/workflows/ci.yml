@@ -42,6 +42,9 @@ jobs:
       - name: Validate privacy configuration
         run: python3 -m unittest tests.test_privacy_configuration
 
+      - name: Validate Atoll Island identity
+        run: python3 -m unittest tests.test_atoll_island_identity
+
       - name: Validate timer lifecycle cleanup
         run: python3 -m unittest tests.test_timer_lifecycle
 
@@ -124,11 +127,11 @@ jobs:
             CODE_SIGNING_ALLOWED=YES \
             CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES
 
-          HELPER="$RUNNER_TEMP/AtollDerivedData/Build/Products/Debug/Atoll.app/Contents/Helpers/codeisland-bridge"
+          HELPER="$RUNNER_TEMP/AtollDerivedData/Build/Products/Debug/Atoll Island.app/Contents/Helpers/codeisland-bridge"
           test -x "$HELPER"
           codesign --verify --strict --verbose=2 "$HELPER"
           scripts/verify-code-island-bundle.sh \
-            "$RUNNER_TEMP/AtollDerivedData/Build/Products/Debug/Atoll.app"
+            "$RUNNER_TEMP/AtollDerivedData/Build/Products/Debug/Atoll Island.app"
 
       - name: Surface Failure Diagnostics
         if: failure()

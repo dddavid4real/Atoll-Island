@@ -237,7 +237,7 @@ class AudioTap: NSObject {
         // Create the Aggregate Device (a "virtual microphone" that we can route the tap into)
         let tapList = [[kAudioSubTapUIDKey: tapUID]]
         let aggregateDict: [String: Any] = [
-            kAudioAggregateDeviceNameKey: "Atoll_Virtual_Tap",
+            kAudioAggregateDeviceNameKey: "AtollIsland_Virtual_Tap",
             kAudioAggregateDeviceUIDKey: UUID().uuidString,
             kAudioAggregateDeviceIsPrivateKey: true,  // Hides it from the user's sound settings
             kAudioAggregateDeviceTapListKey: tapList,

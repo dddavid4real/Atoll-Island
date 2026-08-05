@@ -194,7 +194,7 @@ public struct CodeIslandDashboardView: View {
     private var detailText: String {
         switch state {
         case .setupRequired:
-            return ci("Code Island is built into Atoll. Review Codex availability in Settings; no coding-tool configuration has been changed.")
+            return ci("Code Island is built into Atoll Island. Review Codex availability in Settings; no coding-tool configuration has been changed.")
         case .idle:
             return ci("Connected Codex sessions will appear here when they become active.")
         case .sessions:

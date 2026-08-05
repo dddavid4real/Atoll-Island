@@ -60,7 +60,7 @@ struct CodeIslandSettings: View {
             }
             Button(ci("Cancel"), role: .cancel) {}
         } message: {
-            Text(ci("Atoll will remove only its managed helper and hooks, restore adopted legacy CodeIsland hooks, and leave unrelated Codex configuration unchanged."))
+            Text(ci("Atoll Island will remove only its managed helper and hooks, restore adopted legacy CodeIsland hooks, and leave unrelated Codex configuration unchanged."))
         }
     }
 
@@ -71,7 +71,7 @@ struct CodeIslandSettings: View {
                     .foregroundStyle(.secondary)
             }
 
-            LabeledContent(ci("Atoll host")) {
+            LabeledContent(ci("Atoll Island host")) {
                 Text(host.lifecycleState == .running ? ci("Ready") : ci("Stopped"))
                     .foregroundStyle(.secondary)
             }
@@ -107,7 +107,7 @@ struct CodeIslandSettings: View {
         } header: {
             Text(ci("Code Island"))
         } footer: {
-            Text(ci("Code Island is part of Atoll. It runs no provider listener and changes no Codex configuration until you confirm setup."))
+            Text(ci("Code Island is part of Atoll Island. It runs no provider listener and changes no Codex configuration until you confirm setup."))
                 .foregroundStyle(.secondary)
                 .font(.caption)
         }
@@ -154,7 +154,7 @@ struct CodeIslandSettings: View {
         } header: {
             Text(ci("Codex"))
         } footer: {
-            Text(ci("Monitoring covers lifecycle and meaningful state changes. It does not move questions or decisions into Atoll."))
+            Text(ci("Monitoring covers lifecycle and meaningful state changes. It does not move questions or decisions into Atoll Island."))
                 .foregroundStyle(.secondary)
                 .font(.caption)
         }
@@ -175,7 +175,7 @@ struct CodeIslandSettings: View {
                     .foregroundStyle(.secondary)
             }
             LabeledContent(ci("Listener socket")) {
-                Text(host.isActivated ? ci("Owned by Atoll") : socketStateLabel(assessment.legacySocketState))
+                Text(host.isActivated ? ci("Owned by Atoll Island") : socketStateLabel(assessment.legacySocketState))
                     .foregroundStyle(.secondary)
             }
 
@@ -202,7 +202,7 @@ struct CodeIslandSettings: View {
         } header: {
             Text(ci("Existing CodeIsland"))
         } footer: {
-            Text(ci("Atoll never quits or deletes the old app. Unrelated Codex hooks and security-sensitive standalone settings are not imported."))
+            Text(ci("Atoll Island never quits or deletes the old app. Unrelated Codex hooks and security-sensitive standalone settings are not imported."))
                 .foregroundStyle(.secondary)
                 .font(.caption)
         }
@@ -249,7 +249,7 @@ struct CodeIslandSettings: View {
             }
 
             Toggle(ci("Smart suppression"), isOn: preferenceBinding(\.presentation.smartSuppressionEnabled))
-            Text(ci("Suppress a pop-out only after Atoll positively matches the exact visible origin session."))
+            Text(ci("Suppress a pop-out only after Atoll Island positively matches the exact visible origin session."))
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -336,7 +336,7 @@ struct CodeIslandSettings: View {
         } header: {
             Text(ci("Feature sounds"))
         } footer: {
-            Text(ci("Sounds play only for an Atoll-selected presentation; suppressed and routine events stay silent."))
+            Text(ci("Sounds play only for an Atoll Island-selected presentation; suppressed and routine events stay silent."))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -413,10 +413,10 @@ struct CodeIslandSettings: View {
                 Label(ci("Tool failure observation is unavailable"), systemImage: "info.circle")
             }
 
-            Label(ci("Run /hooks in Codex to review and trust Atoll's command"), systemImage: "checkmark.shield")
+            Label(ci("Run /hooks in Codex to review and trust Atoll Island's command"), systemImage: "checkmark.shield")
             Label(
                 host.isActivated
-                    ? ci("Atoll stores only session metadata")
+                    ? ci("Atoll Island stores only session metadata")
                     : ci("Codex Monitoring is inactive"),
                 systemImage: "lock.shield"
             )
@@ -460,7 +460,7 @@ struct CodeIslandSettings: View {
         case .unreadable: return ci("Needs attention")
         case .readable(let managedCount, let legacyCount):
             if managedCount == 0, legacyCount == 0 { return ci("No Code Island hooks") }
-            return "Atoll \(managedCount), \(ci("legacy")) \(legacyCount)"
+            return "Atoll Island \(managedCount), \(ci("legacy")) \(legacyCount)"
         }
     }
 
@@ -576,7 +576,7 @@ private struct CodeIslandActivationConsentSheet: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text(ci("Confirm Codex Monitoring"))
                     .font(.title2.weight(.semibold))
-                Text(ci("Atoll will observe lifecycle metadata only. Questions, approvals, and all decisions remain in Codex."))
+                Text(ci("Atoll Island will observe lifecycle metadata only. Questions, approvals, and all decisions remain in Codex."))
                     .foregroundStyle(.secondary)
             }
 
@@ -610,7 +610,7 @@ private struct CodeIslandActivationConsentSheet: View {
             }
 
             if hasLegacyHooks {
-                Text(ci("Recognized legacy CodeIsland commands will be backed up in Atoll's ownership receipt, replaced to prevent duplicate raw delivery, and restored on deactivation."))
+                Text(ci("Recognized legacy CodeIsland commands will be backed up in Atoll Island's ownership receipt, replaced to prevent duplicate raw delivery, and restored on deactivation."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -622,7 +622,7 @@ private struct CodeIslandActivationConsentSheet: View {
                     .foregroundStyle(.secondary)
             }
 
-            Label(ci("Run /hooks in Codex after activation to review and trust the Atoll-managed command."), systemImage: "checkmark.shield")
+            Label(ci("Run /hooks in Codex after activation to review and trust the Atoll Island-managed command."), systemImage: "checkmark.shield")
                 .font(.caption)
 
             HStack {
@@ -650,7 +650,7 @@ private func codeIslandChangeLabel(_ kind: CodeIslandConfigurationChangeKind) ->
     switch kind {
     case .modifyProviderHooks: return ci("Modify Codex hooks")
     case .replaceLegacyProviderHooks: return ci("Replace legacy CodeIsland hooks")
-    case .installManagedBridge: return ci("Install Atoll-managed bridge")
+    case .installManagedBridge: return ci("Install Atoll Island-managed bridge")
     case .writeManagedReceipt: return ci("Write ownership receipt and adoption backup")
     case .createListenerSocket: return ci("Create listener socket")
     case .replaceStaleListenerSocket: return ci("Replace stale listener socket")

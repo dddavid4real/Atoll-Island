@@ -37,7 +37,7 @@
 
 ## Distribution boundary
 
-`scripts/verify-code-island-bundle.sh` checks a built `Atoll.app` for:
+`scripts/verify-code-island-bundle.sh` checks a built `Atoll Island.app` for:
 
 - one `Atoll` executable and exactly one
   `Contents/Helpers/codeisland-bridge` helper;

@@ -615,9 +615,9 @@ final class CodeIslandHost: ObservableObject {
         if let installationError = error as? CodexManagedInstallationError {
             switch installationError {
             case .bundledBridgeMissing, .bundledBridgeNotExecutable:
-                return ci("Atoll's signed Code Island helper is unavailable. Reinstall Atoll.")
+                return ci("Atoll Island's signed Code Island helper is unavailable. Reinstall Atoll Island.")
             case .managedBridgeModified, .managedBridgeConflict, .managedReceiptConflict:
-                return ci("Atoll's managed Code Island files need attention before setup can continue.")
+                return ci("Atoll Island's managed Code Island files need attention before setup can continue.")
             default:
                 return ci("Codex Monitoring could not be verified. No provider decision was taken over.")
             }

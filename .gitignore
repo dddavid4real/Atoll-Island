@@ -151,6 +151,7 @@ PrivateWorks
 !tests/test_code_island_phase_six_presentation.py
 !tests/test_code_island_phase_seven_release.py
 !tests/test_code_island_phase_seven_bundle.py
+!tests/test_atoll_island_identity.py
 *.sh
 !scripts/verify-code-island-bundle.sh
 comparison_report.json

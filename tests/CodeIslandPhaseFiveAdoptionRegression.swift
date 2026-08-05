@@ -180,7 +180,7 @@ private final class AdoptionFixture {
         let fileManager = FileManager.default
         root = fileManager.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         hooks = root.appendingPathComponent(".codex/hooks.json")
-        bundledBridge = root.appendingPathComponent("Atoll.app/Contents/Helpers/codeisland-bridge")
+        bundledBridge = root.appendingPathComponent("Atoll Island.app/Contents/Helpers/codeisland-bridge")
         managedRoot = root.appendingPathComponent("Library/Application Support/Atoll/CodeIsland", isDirectory: true)
         managedBridge = managedRoot.appendingPathComponent("codeisland-bridge")
         managedReceipt = managedRoot.appendingPathComponent("codex-installation.json")

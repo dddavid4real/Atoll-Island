@@ -145,7 +145,7 @@ class AtollUserDriver: NSObject, @preconcurrency SPUUserDriver {
         self.hostingController = hostingController
         
         let window = NSWindow(contentViewController: hostingController)
-        window.title = "Atoll Update"
+        window.title = "Atoll Island Update"
         window.styleMask = [.titled, .fullSizeContentView]
         window.isReleasedWhenClosed = false
         window.titlebarAppearsTransparent = true
@@ -245,7 +245,7 @@ struct UpdateCheckingView: View {
                 .font(.headline)
                 .foregroundStyle(.primary)
             
-            Text("Looking for a new version of Atoll")
+            Text("Looking for a new version of Atoll Island")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             

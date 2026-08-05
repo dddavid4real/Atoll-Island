@@ -14,7 +14,7 @@ class CodeIslandPhaseSevenBundleTests(unittest.TestCase):
     def setUp(self):
         self.temporary_directory = tempfile.TemporaryDirectory()
         self.root = pathlib.Path(self.temporary_directory.name)
-        self.app = self.root / "Atoll.app"
+        self.app = self.root / "Atoll Island.app"
         self.resources = self.app / "Contents" / "Resources"
         self.package_bundle = self.resources / "CodeIsland_CodeIslandUI.bundle"
 

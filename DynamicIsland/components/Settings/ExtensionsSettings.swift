@@ -93,11 +93,11 @@ struct ExtensionsSettingsView: View {
             Text("Global Settings")
         } footer: {
             if Defaults[.enableThirdPartyExtensions] {
-                Text("Third-party apps using AtollExtensionKit can display live activities, lock screen widgets, and dedicated notch experiences. Toggle features above or manage individual app permissions below.")
+                Text("Third-party apps using AtollExtensionKit can display live activities, lock screen widgets, and dedicated notch experiences in Atoll Island. Toggle features above or manage individual app permissions below.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else {
-                Text("Enable extensions to allow third-party apps to display live activities and lock screen widgets in Atoll.")
+                Text("Enable extensions to allow third-party apps to display live activities and lock screen widgets in Atoll Island.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

@@ -139,7 +139,7 @@ python3 -m unittest \
 python3 -m unittest tests.test_privacy_configuration
 python3 -m unittest tests.test_timer_lifecycle
 swift test --package-path Packages/CodeIsland
-scripts/verify-code-island-bundle.sh /path/to/Atoll.app
+scripts/verify-code-island-bundle.sh '/path/to/Atoll Island.app'
 ```
 
 Swift validation requires a selected Xcode or Command Line Tools installation

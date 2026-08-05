@@ -63,7 +63,7 @@ enum LogCategory: String {
 }
 
 struct Logger {
-    private static let subsystem = "com.ebullioscopic.Atoll"
+    private static let subsystem = "com.dddavid4real.AtollIsland"
     private static let dateFormatter: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
@@ -170,4 +170,4 @@ public func NSLog(_ format: String, _ args: CVarArg...) {
     if simulatedLevel.rawValue > configuredLevel.rawValue { return }
     
     Foundation.NSLog("%@", message)
-} 
+}

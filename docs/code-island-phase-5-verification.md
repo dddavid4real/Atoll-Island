@@ -62,7 +62,7 @@ unauthorized
 ### Bundle and capability gate
 
 - `codeisland-bridge` is an executable package product copied to
-  `Atoll.app/Contents/Helpers` by a dedicated all-actions Copy Files phase with
+  `Atoll Island.app/Contents/Helpers` by a dedicated all-actions Copy Files phase with
   `CodeSignOnCopy`; it is not linked as a framework.
 - CI requires the live Unix-socket regression, a built executable helper, and
   strict helper signature verification. Release export performs the same

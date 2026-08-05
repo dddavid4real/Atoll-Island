@@ -233,7 +233,7 @@ Read-only detection covers `com.codeisland.app` preferences, `~/.codeisland/`, p
 
 ## Bundle, dependencies, and licensing
 
-- Embed `codeisland-bridge` in `Atoll.app/Contents/Helpers`, build it for every Atoll release architecture, and sign it before signing the app bundle.
+- Embed `codeisland-bridge` in `Atoll Island.app/Contents/Helpers`, build it for every Atoll Island release architecture, and sign it before signing the app bundle.
 - Package mascot, icon, sound, and provider-plugin resources through the internal package without retaining CodeIsland's application icon or app bundle.
 - Do not add Bluetooth entitlements in the first release; Buddy is deferred.
 - Reuse Atoll's Sparkle installation and update lifecycle.
@@ -253,7 +253,7 @@ Each phase must leave Atoll buildable and Code Island disabled or safely usable;
 
 ## Release gates
 
-- One `Atoll.app`; no CodeIsland application, settings window, updater, status item, or notch panel process.
+- One `Atoll Island.app`; no CodeIsland application, settings window, updater, status item, or notch panel process.
 - Zero provider-configuration writes before explicit consent.
 - Native approvals and questions remain visible and answerable in the originating tool.
 - Atoll never emits allow, deny, always-allow, answer, or skip decisions.

@@ -565,7 +565,7 @@ final class ExtensionRPCService {
                       let fileData = Data(base64Encoded: dataStr) else { continue }
 
                 let tempDir = FileManager.default.temporaryDirectory
-                    .appendingPathComponent("AtollExtensionFiles", isDirectory: true)
+                    .appendingPathComponent("AtollIslandExtensionFiles", isDirectory: true)
                 try? FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
                 let fileURL = tempDir.appendingPathComponent(fileName)
                 guard (try? fileData.write(to: fileURL)) != nil else { continue }
