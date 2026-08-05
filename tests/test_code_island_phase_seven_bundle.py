@@ -55,6 +55,21 @@ class CodeIslandPhaseSevenBundleTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("Code Island bundle verification passed", result.stdout)
 
+    def test_macos_resource_bundle_layout_passes(self):
+        macos_resources = self.package_bundle / "Contents" / "Resources"
+        macos_resources.mkdir(parents=True)
+        for resource in (
+            "Sounds",
+            "en.lproj",
+            "CodeIsland.xcstrings",
+            "ThirdPartyNotices",
+        ):
+            (self.package_bundle / resource).rename(macos_resources / resource)
+
+        result = self._verify()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Code Island bundle verification passed", result.stdout)
+
     def test_missing_selected_sound_fails(self):
         (self.package_bundle / "Sounds" / "8bit_error.wav").unlink()
         result = self._verify()

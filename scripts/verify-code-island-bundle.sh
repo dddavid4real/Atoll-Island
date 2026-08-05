@@ -53,7 +53,12 @@ RESOURCE_BUNDLE_COUNT=$(find "$RESOURCES" -type d -name '*CodeIslandUI*.bundle' 
   || fail "the artifact must contain exactly one CodeIslandUI resource bundle"
 RESOURCE_BUNDLE=$(find "$RESOURCES" -type d -name '*CodeIslandUI*.bundle' -print | head -n 1)
 
-SOUNDS_DIRECTORY="$RESOURCE_BUNDLE/Sounds"
+RESOURCE_ROOT="$RESOURCE_BUNDLE"
+if [ -d "$RESOURCE_BUNDLE/Contents/Resources" ]; then
+  RESOURCE_ROOT="$RESOURCE_BUNDLE/Contents/Resources"
+fi
+
+SOUNDS_DIRECTORY="$RESOURCE_ROOT/Sounds"
 [ -d "$SOUNDS_DIRECTORY" ] || fail "the selected Code Island sounds directory is missing"
 for sound in 8bit_approval.wav 8bit_complete.wav 8bit_error.wav 8bit_start.wav; do
   [ -f "$SOUNDS_DIRECTORY/$sound" ] \
@@ -80,11 +85,11 @@ SOUND_COUNT=$(find "$SOUNDS_DIRECTORY" -maxdepth 1 -type f -name '*.wav' -print 
 [ "$SOUND_COUNT" = "4" ] \
   || fail "the selected Code Island sounds directory must contain exactly four WAV files"
 
-LOCALIZATION_COUNT=$(find "$RESOURCE_BUNDLE" -type f \( -name 'CodeIsland.strings' -o -name 'CodeIsland.xcstrings' \) -print | wc -l | tr -d '[:space:]')
+LOCALIZATION_COUNT=$(find "$RESOURCE_ROOT" -type f \( -name 'CodeIsland.strings' -o -name 'CodeIsland.xcstrings' \) -print | wc -l | tr -d '[:space:]')
 [ "$LOCALIZATION_COUNT" -ge 1 ] \
   || fail "the Code Island localization table is missing"
 
-LICENSE_PATH="$RESOURCE_BUNDLE/ThirdPartyNotices/CodeIsland-LICENSE.txt"
+LICENSE_PATH="$RESOURCE_ROOT/ThirdPartyNotices/CodeIsland-LICENSE.txt"
 [ -f "$LICENSE_PATH" ] || fail "the bundled CodeIsland MIT license is missing"
 grep -Fq 'MIT License' "$LICENSE_PATH" \
   || fail "the bundled CodeIsland MIT license is invalid"
