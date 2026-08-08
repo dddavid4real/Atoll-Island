@@ -10,6 +10,7 @@ on:
       - beta
   pull_request:
     branches:
+      - main
       - dev
 
 jobs:

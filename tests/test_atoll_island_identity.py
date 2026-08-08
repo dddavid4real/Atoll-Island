@@ -68,6 +68,41 @@ class AtollIslandIdentityTests(unittest.TestCase):
         self.assertIn('Text("Atoll Island")', welcome_source)
         self.assertIn('window.title = "Atoll Island Settings"', settings_window)
 
+    def test_public_beta_identity_and_installation_are_fork_owned(self):
+        readme = (ROOT / "README.md").read_text()
+        project = (ROOT / "DynamicIsland.xcodeproj" / "project.pbxproj").read_text()
+        release = (ROOT / ".github" / "workflows" / "release.yml").read_text()
+        export_options = (ROOT / "ExportOptions.plist").read_text()
+        version = (ROOT / "VERSION").read_text().strip()
+
+        self.assertTrue(readme.startswith("# Atoll Island\n"))
+        self.assertIn("independent community fork", readme.lower())
+        self.assertIn(
+            "https://github.com/dddavid4real/Atoll-Island/releases",
+            readme,
+        )
+        self.assertIn("unsigned beta", readme.lower())
+        self.assertIn("Control-click", readme)
+        self.assertIn('src="docs/images/atoll-upstream-overview.png"', readme)
+        self.assertIn('src="docs/images/codeisland-upstream-panel.png"', readme)
+        self.assertIn("git checkout main", readme)
+        for relative_image in (
+            "docs/images/atoll-upstream-overview.png",
+            "docs/images/codeisland-upstream-panel.png",
+        ):
+            self.assertTrue((ROOT / relative_image).is_file(), relative_image)
+        self.assertNotIn(
+            "https://github.com/Ebullioscopic/Atoll/releases/latest",
+            readme,
+        )
+        self.assertEqual(version, "0.1.0")
+        self.assertEqual(project.count("MARKETING_VERSION = 0.1.0;"), 2)
+        combined_signing_configuration = "\n".join(
+            (project, release, export_options)
+        )
+        self.assertNotIn("9Y64TRM77N", combined_signing_configuration)
+        self.assertNotIn("Hariharan Mudaliar", combined_signing_configuration)
+
 
 if __name__ == "__main__":
     unittest.main()

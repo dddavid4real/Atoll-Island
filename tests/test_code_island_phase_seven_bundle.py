@@ -1,5 +1,6 @@
 import os
 import pathlib
+import plistlib
 import subprocess
 import tempfile
 import unittest
@@ -139,6 +140,64 @@ class CodeIslandPhaseSevenBundleTests(unittest.TestCase):
         self.assertIn("--require-signature", release)
         self.assertIn("spctl --assess --type open", release)
         self.assertIn("--context context:primary-signature", release)
+
+    def test_unsigned_beta_workflow_is_explicit_manual_and_non_stable(self):
+        workflow = (
+            ROOT / ".github" / "workflows" / "unsigned-beta.yml"
+        ).read_text()
+        notes = (ROOT / "docs" / "unsigned-beta-release.md").read_text()
+
+        trigger = workflow[: workflow.index("permissions:")]
+        self.assertIn("workflow_dispatch:", trigger)
+        self.assertNotIn("push:", trigger)
+        self.assertIn('default: "false"', workflow)
+        self.assertIn("Atoll-Island-${VERSION}-UNSIGNED.dmg", workflow)
+        self.assertIn("codesign --force --deep --sign - --options runtime", workflow)
+        self.assertIn(
+            "${{ github.workspace }}/DynamicIsland/UnsignedRelease.entitlements",
+            workflow,
+        )
+        self.assertIn("scripts/verify-code-island-bundle.sh", workflow)
+        self.assertNotIn("--require-signature", workflow)
+        self.assertIn("actions/upload-artifact@v4", workflow)
+        self.assertIn("--prerelease", workflow)
+        self.assertIn("not signed or notarized", notes.lower())
+        self.assertIn("Control-click", notes)
+
+        entitlements = plistlib.loads(
+            (ROOT / "DynamicIsland" / "UnsignedRelease.entitlements").read_bytes()
+        )
+        self.assertTrue(
+            entitlements["com.apple.security.cs.disable-library-validation"]
+        )
+        self.assertTrue(entitlements["com.apple.security.device.camera"])
+        self.assertTrue(
+            entitlements["com.apple.security.automation.apple-events"]
+        )
+        self.assertNotIn("com.apple.security.mach-services", entitlements)
+        self.assertNotIn(
+            "com.apple.security.temporary-exception.mach-lookup.global-name",
+            entitlements,
+        )
+
+    def test_signed_release_and_fork_maintenance_are_not_automatic(self):
+        release = (ROOT / ".github" / "workflows" / "release.yml").read_text()
+        trigger = release[: release.index("permissions:")]
+
+        self.assertIn("workflow_dispatch:", trigger)
+        self.assertNotIn("push:", trigger)
+        self.assertFalse(
+            (ROOT / ".github" / "workflows" / "nightly-merge.yml").exists()
+        )
+        self.assertFalse(
+            (ROOT / ".github" / "workflows" / "mirror-release.yml").exists()
+        )
+        self.assertFalse(
+            (ROOT / ".github" / "workflows" / "update-pricing.yml").exists()
+        )
+        self.assertFalse(
+            (ROOT / ".github" / "workflows" / "triage-slash-commands.yml").exists()
+        )
 
     def test_upgrade_and_rollback_gates_remain_in_ci(self):
         ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text()

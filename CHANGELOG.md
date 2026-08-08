@@ -9,11 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Unsigned public beta path**: Added fork-owned installation guidance, a
+  manual prerelease workflow, checksum publication, and an explicit Gatekeeper
+  disclosure while Apple Developer ID signing remains unavailable.
 - **Code Island integration**: Added Codex session monitoring as a persistent Atoll panel and Atoll-owned live activity, with explicit activation, origin-only approvals and answers, sanitized metadata persistence, grouping and retention controls, optional Dex visuals and audited sounds, guided legacy adoption, localization/accessibility seams, and signed-release bundle verification.
 - **AntiGravity Usage Tracking**: Track how much of Antigravity usage is left in the LLM Usage Monitor tab (both Gemini and Claude models)
 - **Shelf item removal**: Hovering a Shelf item now reveals a × button that removes just that item, with a VoiceOver-accessible "Remove from Shelf" action that works without hovering (#461).
 
 ### Changed
+- Rebased the public product version as Atoll Island 0.1.0 and separated its
+  release identity from upstream Atoll 2.3.3.
 - Improved the Dutch localization by adding missing translations, corrected terminology, and wording aligned with Apple's Dutch macOS conventions.
 
 ### Fixed
