@@ -57,9 +57,10 @@ license notes are recorded in [docs/images/README.md](docs/images/README.md).
 
 ## Beta status and signing
 
-The first public build is an **unsigned beta**. It is ad-hoc code-signed for
-bundle integrity, but it is not signed with an Apple Developer ID and is not
-notarized by Apple. macOS will therefore show a Gatekeeper warning.
+Public builds are currently distributed as **unsigned beta releases**. They are
+ad-hoc code-signed for bundle integrity, but they are not signed with an Apple
+Developer ID and are not notarized by Apple. macOS will therefore show a
+Gatekeeper warning.
 
 Bypassing that warning does not establish that an app is safe. Review the
 source and release notes, download only from this repository, and compare the

@@ -1,9 +1,20 @@
-# Atoll Island unsigned beta
+# Atoll Island 0.1.1 unsigned beta
 
 > **Important:** This beta is not signed or notarized with an Apple Developer
 > ID. macOS will show a Gatekeeper warning. It is published as a prerelease for
 > testing while the project does not participate in the paid Apple Developer
 > Program.
+
+## Fixed in 0.1.1
+
+- Fixed repeated Codex hook failures caused by the managed Code Island bridge
+  depending on frameworks that were unavailable after installation.
+- Restored active-session detection for Codex sessions running inside terminal
+  hosts such as Herdr.
+- Added automatic repair for the managed bridge when upgrading from an older
+  Atoll Island installation; users do not need to repeat Code Island setup.
+- Added a release check that copies and runs the bridge outside the app bundle
+  so this packaging failure cannot silently recur.
 
 ## Installation
 
@@ -12,6 +23,10 @@
 3. Drag Atoll Island to Applications.
 4. In Applications, **Control-click** Atoll Island, choose **Open**, and confirm
    **Open** in the Gatekeeper dialog.
+
+When upgrading, quit Atoll Island before replacing the existing copy in
+Applications. Code Island's managed Codex integration will be checked and
+repaired automatically on the next launch.
 
 The checksum confirms that the download matches this release asset; it does not
 independently establish that the software is safe. Source for the exact release
