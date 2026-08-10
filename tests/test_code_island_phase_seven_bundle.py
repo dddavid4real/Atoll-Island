@@ -26,7 +26,7 @@ class CodeIslandPhaseSevenBundleTests(unittest.TestCase):
         (self.package_bundle / "ThirdPartyNotices").mkdir(parents=True)
 
         self._write_executable(self.app / "Contents" / "MacOS" / "Atoll")
-        self._write_executable(
+        self._compile_portable_helper(
             self.app / "Contents" / "Helpers" / "codeisland-bridge"
         )
         for sound in (
@@ -82,6 +82,16 @@ class CodeIslandPhaseSevenBundleTests(unittest.TestCase):
         result = self._verify()
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("selected Code Island sound is not the audited upstream asset", result.stderr)
+
+    def test_managed_helper_with_private_framework_dependency_fails(self):
+        self._compile_nonportable_helper(
+            self.app / "Contents" / "Helpers" / "codeisland-bridge"
+        )
+
+        result = self._verify()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("self-contained", result.stderr)
 
     def test_nested_standalone_app_fails(self):
         nested = self.app / "Contents" / "Resources" / "CodeIsland.app"
@@ -230,6 +240,80 @@ class CodeIslandPhaseSevenBundleTests(unittest.TestCase):
     def _write_executable(path):
         path.write_text("#!/bin/sh\nexit 0\n")
         os.chmod(path, 0o755)
+
+    @staticmethod
+    def _compile_portable_helper(path):
+        subprocess.run(
+            ["xcrun", "clang", "-x", "c", "-", "-o", str(path)],
+            input="int main(void) { return 0; }\n",
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+
+    def _compile_nonportable_helper(self, path):
+        framework_binary = (
+            self.app
+            / "Contents"
+            / "Frameworks"
+            / "CodeIslandCore.framework"
+            / "Versions"
+            / "A"
+            / "CodeIslandCore"
+        )
+        framework_binary.parent.mkdir(parents=True)
+        subprocess.run(
+            [
+                "xcrun",
+                "clang",
+                "-dynamiclib",
+                "-x",
+                "c",
+                "-",
+                "-install_name",
+                "@rpath/CodeIslandCore.framework/Versions/A/CodeIslandCore",
+                "-o",
+                str(framework_binary),
+            ],
+            input="int code_island_fixture(void) { return 0; }\n",
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+        bridge_object = self.root / "nonportable-bridge.o"
+        subprocess.run(
+            [
+                "xcrun",
+                "clang",
+                "-c",
+                "-x",
+                "c",
+                "-",
+                "-o",
+                str(bridge_object),
+            ],
+            input=(
+                "extern int code_island_fixture(void);\n"
+                "int main(void) { return code_island_fixture(); }\n"
+            ),
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+        subprocess.run(
+            [
+                "xcrun",
+                "clang",
+                str(bridge_object),
+                str(framework_binary),
+                "-Wl,-rpath,@executable_path/../Frameworks",
+                "-o",
+                str(path),
+            ],
+            text=True,
+            capture_output=True,
+            check=True,
+        )
 
 
 if __name__ == "__main__":

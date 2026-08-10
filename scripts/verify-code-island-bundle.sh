@@ -32,6 +32,42 @@ HELPER="$APP_PATH/Contents/Helpers/codeisland-bridge"
 [ -f "$HELPER" ] || fail "the codeisland-bridge helper is missing"
 [ -x "$HELPER" ] || fail "the codeisland-bridge helper is not executable"
 
+HELPER_KIND=$(/usr/bin/file -b "$HELPER")
+case "$HELPER_KIND" in
+  *Mach-O*) ;;
+  *) fail "the Code Island helper is not a Mach-O executable" ;;
+esac
+
+HELPER_DEPENDENCIES=$(/usr/bin/otool -L "$HELPER") \
+  || fail "the Code Island helper dependencies cannot be inspected"
+if printf '%s\n' "$HELPER_DEPENDENCIES" \
+  | grep -Eq 'CodeIsland(Core|Runtime)\.framework|libCodeIsland(Core|Runtime)\.dylib'; then
+  fail "the Code Island helper is not self-contained"
+fi
+
+PORTABILITY_ROOT=$(mktemp -d "${TMPDIR:-/private/tmp}/atoll-code-island-verify.XXXXXX") \
+  || fail "a temporary portability directory cannot be created"
+trap 'rm -rf "$PORTABILITY_ROOT"' EXIT
+PORTABLE_HELPER="$PORTABILITY_ROOT/codeisland-bridge"
+/bin/cp -p "$HELPER" "$PORTABLE_HELPER" \
+  || fail "the Code Island helper cannot be copied for portability verification"
+
+set +e
+printf '%s\n' '{"session_id":"atoll-bundle-verification","hook_event_name":"SessionStart","cwd":"/private/tmp"}' \
+  | "$PORTABLE_HELPER" \
+      --source codex \
+      --socket "$PORTABILITY_ROOT/missing.sock" \
+      --managed-by-atoll bundle-verification \
+      >"$PORTABILITY_ROOT/stdout" \
+      2>"$PORTABILITY_ROOT/stderr"
+PORTABLE_HELPER_STATUS=$?
+set -e
+[ "$PORTABLE_HELPER_STATUS" -eq 0 ] \
+  || fail "the Code Island helper is not self-contained when copied outside the app"
+
+rm -rf "$PORTABILITY_ROOT"
+trap - EXIT
+
 HELPER_COUNT=$(find "$APP_PATH" -type f -name 'codeisland-bridge' -print | wc -l | tr -d '[:space:]')
 [ "$HELPER_COUNT" = "1" ] || fail "the artifact must contain exactly one Code Island helper"
 

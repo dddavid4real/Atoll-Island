@@ -75,6 +75,14 @@ private struct CodeIslandPhaseFiveAdoptionRegression {
         defer { fixture.remove() }
         let installer = CodexManagedInstallation(managedRootURL: fixture.managedRoot)
         let receipt = try installer.install(plan: fixture.plan)
+        let unchangedRequiresRepair = try installer.requiresRepair(
+            receipt: receipt,
+            plan: fixture.plan
+        )
+        try assertThat(
+            !unchangedRequiresRepair,
+            "an unchanged bundled helper must not trigger an upgrade repair"
+        )
 
         try FileManager.default.removeItem(at: fixture.hooks)
         try installer.remove(receipt: receipt)
@@ -103,13 +111,21 @@ private struct CodeIslandPhaseFiveAdoptionRegression {
         hooks["SessionStart"] = groups
         root["hooks"] = hooks
         try fixture.writeHooks(root)
-        try FileManager.default.removeItem(at: fixture.managedBridge)
         let updatedBridge = Data("#!/bin/sh\n# updated\nexit 0\n".utf8)
         try updatedBridge.write(to: fixture.bundledBridge)
         try FileManager.default.setAttributes(
             [.posixPermissions: 0o700],
             ofItemAtPath: fixture.bundledBridge.path
         )
+        let changedRequiresRepair = try installer.requiresRepair(
+            receipt: receipt,
+            plan: fixture.plan
+        )
+        try assertThat(
+            changedRequiresRepair,
+            "a changed trusted bundled helper must trigger an upgrade repair"
+        )
+        try FileManager.default.removeItem(at: fixture.managedBridge)
 
         let repaired = try installer.repair(receipt: receipt, plan: fixture.plan)
         try installer.verify(receipt: repaired)

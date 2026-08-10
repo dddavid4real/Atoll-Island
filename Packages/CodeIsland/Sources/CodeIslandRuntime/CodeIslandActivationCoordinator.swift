@@ -110,6 +110,10 @@ public protocol CodeIslandManagedInstalling {
     func loadManagedReceipt() throws -> CodeIslandManagedInstallationReceipt?
     func install(plan: CodeIslandInstallationPlan) throws -> CodeIslandManagedInstallationReceipt
     func verify(receipt: CodeIslandManagedInstallationReceipt) throws
+    func requiresRepair(
+        receipt: CodeIslandManagedInstallationReceipt,
+        plan: CodeIslandInstallationPlan
+    ) throws -> Bool
     func repair(
         receipt: CodeIslandManagedInstallationReceipt,
         plan: CodeIslandInstallationPlan
@@ -120,6 +124,16 @@ public protocol CodeIslandManagedInstalling {
 public extension CodeIslandManagedInstalling {
     /// Test and pre-rollout adapters have no durable activation by default.
     func loadManagedReceipt() throws -> CodeIslandManagedInstallationReceipt? { nil }
+
+    /// Adapters without bundled artifacts have no upgrade repair to perform.
+    func requiresRepair(
+        receipt: CodeIslandManagedInstallationReceipt,
+        plan: CodeIslandInstallationPlan
+    ) throws -> Bool {
+        _ = receipt
+        _ = plan
+        return false
+    }
 
     /// Adapters without repair support may prove the existing receipt only.
     func repair(
@@ -217,12 +231,21 @@ public final class CodeIslandActivationCoordinator {
         try listener.start(at: socketURL)
         do {
             let active: CodeIslandManagedInstallationReceipt
+            let receiptVerified: Bool
             do {
                 try installer.verify(receipt: receipt)
-                active = receipt
+                receiptVerified = true
             } catch {
+                receiptVerified = false
+            }
+            let repairRequired = receiptVerified
+                ? try installer.requiresRepair(receipt: receipt, plan: plan)
+                : true
+            if repairRequired {
                 active = try installer.repair(receipt: receipt, plan: plan)
                 try installer.verify(receipt: active)
+            } else {
+                active = receipt
             }
             activeReceipt = active
             return active

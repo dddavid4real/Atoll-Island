@@ -95,8 +95,8 @@ class AtollIslandIdentityTests(unittest.TestCase):
             "https://github.com/Ebullioscopic/Atoll/releases/latest",
             readme,
         )
-        self.assertEqual(version, "0.1.0")
-        self.assertEqual(project.count("MARKETING_VERSION = 0.1.0;"), 2)
+        self.assertEqual(version, "0.1.1")
+        self.assertEqual(project.count("MARKETING_VERSION = 0.1.1;"), 2)
         combined_signing_configuration = "\n".join(
             (project, release, export_options)
         )

@@ -234,6 +234,32 @@ public struct CodexManagedInstallation: CodeIslandManagedInstalling {
         }
     }
 
+    /// A receipt-owned installation still needs repair when an Atoll update
+    /// ships a different trusted helper than the one recorded by that receipt.
+    public func requiresRepair(
+        receipt: CodeIslandManagedInstallationReceipt,
+        plan: CodeIslandInstallationPlan
+    ) throws -> Bool {
+        try validateReceiptPaths(receipt)
+        guard plan.provider == receipt.provider,
+              plan.hookEvents == receipt.hookEvents,
+              plan.url(for: .modifyProviderHooks)?.standardizedFileURL
+                == receipt.hookConfigurationURL.standardizedFileURL,
+              plan.url(for: .installManagedBridge)?.standardizedFileURL
+                == receipt.managedBridgeURL.standardizedFileURL,
+              plan.url(for: .writeManagedReceipt)?.standardizedFileURL
+                == receipt.managedReceiptURL.standardizedFileURL,
+              plan.listenerSocketURL?.standardizedFileURL
+                == receipt.listenerSocketURL?.standardizedFileURL,
+              fileManager.isExecutableFile(atPath: plan.bundledBridgeURL.path),
+              let bundledBridgeData = try? Data(contentsOf: plan.bundledBridgeURL),
+              let persisted = try? decodedReceipt(at: receipt.managedReceiptURL),
+              persisted == receipt else {
+            throw CodexManagedInstallationError.invalidPlan
+        }
+        return digest(bundledBridgeData) != receipt.bridgeDigest
+    }
+
     public func repair(
         receipt: CodeIslandManagedInstallationReceipt,
         plan: CodeIslandInstallationPlan

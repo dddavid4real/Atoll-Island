@@ -97,7 +97,8 @@ class CodeIslandPhaseFourContractTests(unittest.TestCase):
 
         self.assertIn("public static let isEnabledByDefault = false", runtime)
         self.assertIn("CodeIslandRuntime.live", host)
-        self.assertIn("codeisland-bridge in Embed Code Island Helper", project)
+        self.assertIn("Build Code Island Helper", project)
+        self.assertIn("scripts/build-code-island-helper.sh", project)
 
     @staticmethod
     def _compile_module(module_name, temporary_path, environment):

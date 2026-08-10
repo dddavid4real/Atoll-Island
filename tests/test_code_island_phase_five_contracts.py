@@ -58,10 +58,11 @@ class CodeIslandPhaseFiveContractTests(unittest.TestCase):
         ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text()
         release = (ROOT / ".github" / "workflows" / "release.yml").read_text()
 
-        self.assertIn("codeisland-bridge in Embed Code Island Helper", project)
-        self.assertIn("productName = codeisland-bridge;", project)
-        self.assertIn("CodeSignOnCopy", project)
-        self.assertIn("dstPath = Contents/Helpers;", project)
+        self.assertIn("Build Code Island Helper", project)
+        self.assertIn("scripts/build-code-island-helper.sh", project)
+        self.assertIn("Helpers/codeisland-bridge", project)
+        self.assertNotIn("productName = codeisland-bridge;", project)
+        self.assertNotIn("codeisland-bridge in Embed Code Island Helper", project)
         self.assertNotIn("codeisland-bridge in Frameworks", project)
 
         self.assertIn("CODEISLAND_REQUIRE_LIVE_SOCKET: 1", ci)

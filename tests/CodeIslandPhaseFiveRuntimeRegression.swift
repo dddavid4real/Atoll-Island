@@ -17,6 +17,7 @@ private struct CodeIslandPhaseFiveRuntimeRegression {
         try verifyInactiveStartIsReadOnly()
         try verifyReceiptResumesListenerBeforeVerification()
         try verifyReceiptGatesRepairAfterListenerStartup()
+        try verifyBundledBridgeUpgradeRepairsAfterVerification()
     }
 
     private static func verifyCodexMonitoringCapabilityIsAvailable() throws {
@@ -53,6 +54,7 @@ private struct CodeIslandPhaseFiveRuntimeRegression {
                 "preflight",
                 "listener.start",
                 "installer.verify",
+                "installer.requiresRepair",
             ],
             "resume must make the listener ready before verification"
         )
@@ -84,7 +86,7 @@ private struct CodeIslandPhaseFiveRuntimeRegression {
     }
 
     private static func verifyReceiptGatesRepairAfterListenerStartup() throws {
-        let fixture = RuntimeFixture(installed: true, requiresRepair: true)
+        let fixture = RuntimeFixture(installed: true, verificationFails: true)
         try fixture.runtime.start(plan: fixture.plan)
 
         try verify(fixture.runtime.state == .active(provider: .codex), "receipt-owned drift must be repaired")
@@ -100,6 +102,28 @@ private struct CodeIslandPhaseFiveRuntimeRegression {
             "repair must run only after receipt load and listener readiness"
         )
     }
+
+    private static func verifyBundledBridgeUpgradeRepairsAfterVerification() throws {
+        let fixture = RuntimeFixture(installed: true, bundledBridgeChanged: true)
+        try fixture.runtime.start(plan: fixture.plan)
+
+        try verify(
+            fixture.runtime.state == .active(provider: .codex),
+            "a newer bundled bridge must preserve the activated runtime"
+        )
+        try verify(
+            fixture.recorder.events == [
+                "installer.load",
+                "preflight",
+                "listener.start",
+                "installer.verify",
+                "installer.requiresRepair",
+                "installer.repair",
+                "installer.verify",
+            ],
+            "a verified receipt must upgrade when the trusted bundled bridge changes"
+        )
+    }
 }
 
 private final class RuntimeFixture {
@@ -109,7 +133,11 @@ private final class RuntimeFixture {
     let plan: CodeIslandInstallationPlan
     let runtime: CodeIslandRuntime
 
-    init(installed: Bool, requiresRepair: Bool = false) {
+    init(
+        installed: Bool,
+        verificationFails: Bool = false,
+        bundledBridgeChanged: Bool = false
+    ) {
         let root = URL(fileURLWithPath: "/private/tmp/atoll-phase-five-runtime")
         plan = CodeIslandInstallationPlan(
             provider: .codex,
@@ -139,7 +167,8 @@ private final class RuntimeFixture {
             installer: RuntimeInstaller(
                 recorder: recorder,
                 receipt: receipt,
-                requiresRepair: requiresRepair
+                verificationFails: verificationFails,
+                bundledBridgeChanged: bundledBridgeChanged
             ),
             drainTimeout: 0.25
         )
@@ -172,17 +201,20 @@ private struct RuntimeListener: CodeIslandListenerControlling {
 private final class RuntimeInstaller: CodeIslandManagedInstalling, @unchecked Sendable {
     let recorder: RuntimeEventRecorder
     let receipt: CodeIslandManagedInstallationReceipt?
-    let requiresRepair: Bool
+    let verificationFails: Bool
+    let bundledBridgeChanged: Bool
     private var verificationCount = 0
 
     init(
         recorder: RuntimeEventRecorder,
         receipt: CodeIslandManagedInstallationReceipt?,
-        requiresRepair: Bool
+        verificationFails: Bool,
+        bundledBridgeChanged: Bool
     ) {
         self.recorder = recorder
         self.receipt = receipt
-        self.requiresRepair = requiresRepair
+        self.verificationFails = verificationFails
+        self.bundledBridgeChanged = bundledBridgeChanged
     }
     func loadManagedReceipt() throws -> CodeIslandManagedInstallationReceipt? {
         recorder.events.append("installer.load")
@@ -195,9 +227,16 @@ private final class RuntimeInstaller: CodeIslandManagedInstalling, @unchecked Se
     func verify(receipt: CodeIslandManagedInstallationReceipt) throws {
         recorder.events.append("installer.verify")
         verificationCount += 1
-        if requiresRepair, verificationCount == 1 {
+        if verificationFails, verificationCount == 1 {
             throw RuntimeRegressionFailure.failed("receipt-owned drift")
         }
+    }
+    func requiresRepair(
+        receipt: CodeIslandManagedInstallationReceipt,
+        plan: CodeIslandInstallationPlan
+    ) throws -> Bool {
+        recorder.events.append("installer.requiresRepair")
+        return bundledBridgeChanged
     }
     func repair(
         receipt: CodeIslandManagedInstallationReceipt,
